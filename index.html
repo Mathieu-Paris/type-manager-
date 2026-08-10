@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quel type de manager êtes-vous ? — Other Format</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-cream:#EDE9DC;
+    --bg-olive:#C7CBA0;
+    --bg-olive-deep:#B7BC8C;
+    --ink:#2B2A24;
+    --ink-soft:#57543F;
+    --ocre:#BE8A2E;
+    --ocre-dark:#9A6E20;
+    --line:#C3BFA9;
+    --card:#F6F4EA;
+
+    --c-pilier:#A8714C;
+    --c-perf:#C89B3C;
+    --c-referent:#4F6D63;
+    --c-coach:#B98B8B;
+    --c-leader:#5B4B6E;
+    --c-vision:#7C8F5E;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg-cream);
+    color:var(--ink);
+    font-family:'Red Hat Display',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    line-height:1.55;
+  }
+  h1,h2,h3,.serif{font-family:'Red Hat Display',sans-serif;font-weight:600;}
+  .eyebrow{
+    font-family:'Red Hat Display',sans-serif;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    font-weight:600;
+  }
+  #app{
+    max-width:640px;
+    margin:0 auto;
+    padding:48px 24px 80px;
+    min-height:100vh;
+  }
+  .screen{display:none;animation:fadeIn .5s ease;}
+  .screen.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ---------- Logo / header ---------- */
+  .brandmark{
+    display:flex;align-items:center;gap:10px;margin-bottom:40px;
+  }
+  .brandmark .dot{
+    width:34px;height:34px;border-radius:50%;
+    background:var(--ocre);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Red Hat Display',sans-serif;color:var(--bg-cream);font-weight:600;font-size:15px;
+  }
+  .brandmark .name{font-family:'Red Hat Display',sans-serif;font-size:17px;letter-spacing:.01em;}
+
+  /* ---------- Intro screen ---------- */
+  .intro h1{font-size:34px;font-weight:600;line-height:1.18;margin:14px 0 22px;color:var(--ink);}
+  .intro p{color:var(--ink-soft);font-size:16px;margin:0 0 16px;}
+  .meta-row{
+    display:flex;gap:18px;flex-wrap:wrap;margin:28px 0 34px;
+    font-size:13px;color:var(--ink-soft);
+  }
+  .meta-row span{display:flex;align-items:center;gap:6px;}
+  .meta-row span::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--ocre);display:inline-block;}
+
+  .btn{
+    appearance:none;border:none;cursor:pointer;
+    font-family:'Red Hat Display',sans-serif;font-weight:600;font-size:15px;
+    padding:14px 28px;border-radius:2px;
+    transition:transform .15s ease, opacity .15s ease, background .15s ease;
+  }
+  .btn-primary{background:var(--ocre);color:#fff;}
+  .btn-primary:hover{background:var(--ocre-dark);}
+  .btn-primary:disabled{opacity:.35;cursor:not-allowed;}
+  .btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line);}
+  .btn-ghost:hover{border-color:var(--ink);}
+  .btn-row{display:flex;gap:12px;align-items:center;margin-top:8px;}
+
+  .arrow-hint{width:64px;margin:18px 0 0 4px;opacity:.7;}
+
+  /* ---------- Progress ---------- */
+  .progress-wrap{margin-bottom:34px;}
+  .progress-track{
+    height:2px;background:var(--line);width:100%;position:relative;border-radius:2px;overflow:hidden;
+  }
+  .progress-fill{
+    height:100%;background:var(--ocre);width:0%;
+    transition:width .4s ease;
+  }
+  .progress-label{
+    font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);
+    margin-top:10px;font-weight:600;
+  }
+
+  /* ---------- Question ---------- */
+  .q-title{font-size:24px;font-weight:600;line-height:1.35;margin:0 0 8px;}
+  .q-help{font-size:13px;color:var(--ink-soft);margin:0 0 24px;}
+  .options{display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
+  .option{
+    text-align:left;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:15px 18px;
+    font-size:15px;
+    color:var(--ink);
+    cursor:pointer;
+    transition:all .15s ease;
+    display:flex;align-items:flex-start;gap:12px;
+  }
+  .option:hover{border-color:var(--ocre);}
+  .option .box{
+    width:18px;height:18px;min-width:18px;border-radius:50%;border:1.5px solid var(--line);
+    margin-top:2px;
+    display:flex;align-items:center;justify-content:center;
+    transition:all .15s ease;
+  }
+  .option.selected{background:#FBF3E1;border-color:var(--ocre);}
+  .option.selected .box{background:var(--ocre);border-color:var(--ocre);}
+  .option.selected .box::after{content:"";width:6px;height:6px;border-radius:50%;background:#fff;}
+  .option.disabled{opacity:.4;cursor:not-allowed;}
+
+  .open-textarea{
+    width:100%;min-height:130px;
+    background:transparent;
+    border:none;border-bottom:1.5px solid var(--line);
+    font-family:'Red Hat Display',sans-serif;font-size:15.5px;color:var(--ink);
+    padding:8px 2px 14px;resize:vertical;line-height:1.6;
+    margin-bottom:28px;
+  }
+  .open-textarea:focus{outline:none;border-color:var(--ocre);}
+  .open-textarea::placeholder{color:#A6A28C;}
+
+  .nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+  .step-count{font-size:12px;color:var(--ink-soft);}
+
+  /* ---------- Loading ---------- */
+  .loading{text-align:center;padding:80px 0;}
+  .loading .serif{font-size:20px;color:var(--ink-soft);}
+  .spinner{
+    width:28px;height:28px;border-radius:50%;
+    border:2px solid var(--line);border-top-color:var(--ocre);
+    margin:0 auto 20px;
+    animation:spin 1s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* ---------- Results ---------- */
+  .cadrage{
+    background:var(--bg-olive);
+    border-radius:3px;
+    padding:20px 22px;
+    font-size:14px;
+    color:#2f331f;
+    margin-bottom:36px;
+    line-height:1.65;
+  }
+  .result-hero{text-align:center;margin-bottom:8px;}
+  .result-hero .eyebrow{display:block;margin-bottom:10px;}
+  .result-hero h1{font-size:32px;margin:0 0 6px;color:var(--profile-color, var(--ocre));}
+  .result-hero .sub{font-size:14px;color:var(--ink-soft);}
+
+  .chart-wrap{display:flex;flex-direction:column;align-items:center;margin:32px 0;}
+  .legend{display:flex;flex-wrap:wrap;gap:10px 18px;justify-content:center;margin-top:18px;max-width:440px;}
+  .legend-item{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink-soft);}
+  .legend-dot{width:9px;height:9px;border-radius:50%;}
+  .legend-item.dominant{color:var(--ink);font-weight:600;}
+
+  .secondary-note{
+    text-align:center;font-size:13.5px;color:var(--ink-soft);margin:6px 0 30px;
+  }
+  .secondary-note b{color:var(--ink);}
+
+  .secondary-card{
+    background:transparent;
+    border:1px dashed var(--line);
+    border-radius:3px;
+    padding:18px 22px;
+    margin-bottom:30px;
+  }
+  .secondary-card .eyebrow{display:block;margin-bottom:8px;}
+  .secondary-card .name{font-size:16px;font-weight:700;margin:0 0 10px;}
+  .secondary-toggle{
+    appearance:none;border:none;background:none;cursor:pointer;
+    font-family:'Red Hat Display',sans-serif;font-weight:600;font-size:13px;
+    color:var(--ocre-dark);padding:0;
+  }
+  .secondary-toggle:hover{text-decoration:underline;}
+  .secondary-full{margin-top:16px;padding-top:16px;border-top:1px solid var(--line);}
+  .secondary-full p{margin:0 0 12px;font-size:14px;color:var(--ink-soft);}
+  .secondary-full h4{
+    font-size:11px;text-transform:uppercase;letter-spacing:.08em;font-weight:600;
+    color:var(--ink-soft);margin:16px 0 8px;
+  }
+  .secondary-full h4:first-of-type{margin-top:0;}
+
+  .profile-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:28px 26px;
+    margin-bottom:20px;
+  }
+  .profile-card h3{
+    font-size:12px;text-transform:uppercase;letter-spacing:.1em;font-family:'Red Hat Display',sans-serif;
+    font-weight:600;color:var(--profile-color, var(--ocre));margin:0 0 12px;
+  }
+  .profile-card p{margin:0 0 14px;font-size:15px;color:var(--ink);}
+  .profile-card p:last-child{margin-bottom:0;}
+  .divider{height:1px;background:var(--line);margin:26px 0;}
+
+  .reflection{
+    margin:34px 0;
+  }
+  .reflection .eyebrow{display:block;margin-bottom:14px;}
+  .reflection-item{
+    border-left:2px solid var(--profile-color, var(--ocre));
+    padding:4px 0 4px 18px;
+    margin-bottom:18px;
+  }
+  .reflection-item .q{font-size:12px;color:var(--ink-soft);margin:0 0 6px;}
+  .reflection-item .a{font-size:15px;font-style:italic;color:var(--ink);margin:0;}
+
+  .synthesis-box{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:26px 24px;
+  }
+  .synthesis-loading{
+    display:flex;align-items:center;gap:10px;
+    font-size:14px;color:var(--ink-soft);font-style:italic;
+  }
+  .spinner-sm{
+    width:14px;height:14px;border-radius:50%;
+    border:2px solid var(--line);border-top-color:var(--ocre);
+    display:inline-block;
+    animation:spin 1s linear infinite;
+  }
+  .synthesis-text{font-size:15.5px;line-height:1.7;margin:0;white-space:pre-line;}
+
+  .cta-box{
+    background:var(--bg-olive);
+    border-radius:3px;
+    padding:26px 24px;
+    margin:36px 0 28px;
+    text-align:center;
+  }
+  .cta-box p{font-size:14.5px;color:#2f331f;margin:0 0 18px;line-height:1.6;}
+  .cta-box a.btn-primary{display:inline-block;text-decoration:none;}
+
+  .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
+
+  footer.note{
+    text-align:center;font-size:11.5px;color:#8B876F;margin-top:50px;
+  }
+
+  @media(max-width:480px){
+    #app{padding:32px 18px 60px;}
+    .intro h1{font-size:27px;}
+    .q-title{font-size:20px;}
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div class="brandmark">
+    <div class="dot">OF</div>
+    <div class="name">Other Format</div>
+  </div>
+
+  <!-- ===================== INTRO ===================== -->
+  <div class="screen active" id="screen-intro">
+    <span class="eyebrow">Quick Test — Manager</span>
+    <h1>Quel type de manager êtes-vous ?</h1>
+    <p>Il n'existe pas de bon ou de mauvais manager. Il existe différents types de management, différentes personnalités et différentes situations — l'idée est de mieux comprendre le vôtre, et d'ouvrir quelques pistes de réflexion.</p>
+    <p>Répondez avec ce qui vous ressemble vraiment, pas ce que vous pensez qu'il faut répondre.</p>
+    <div class="meta-row">
+      <span>9 questions</span>
+      <span>2 réflexions ouvertes</span>
+      <span>~5 minutes</span>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="startQuiz()">Commencer le test</button>
+    </div>
+  </div>
+
+  <!-- ===================== QUIZ ===================== -->
+  <div class="screen" id="screen-quiz">
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-label" id="progressLabel">Question 1 / 11</div>
+    </div>
+
+    <div id="questionArea"></div>
+
+    <div class="nav-row">
+      <button class="btn btn-ghost" id="btnPrev" onclick="prevStep()">Précédent</button>
+      <button class="btn btn-primary" id="btnNext" onclick="nextStep()" disabled>Suivant</button>
+    </div>
+  </div>
+
+  <!-- ===================== LOADING ===================== -->
+  <div class="screen" id="screen-loading">
+    <div class="loading">
+      <div class="spinner"></div>
+      <div class="serif">On assemble votre profil...</div>
+    </div>
+  </div>
+
+  <!-- ===================== RESULTS ===================== -->
+  <div class="screen" id="screen-results">
+    <div class="cadrage">
+      Le but de ce test n'est pas de déterminer si vous êtes un bon ou un mauvais manager. Il existe différents types de management, différentes personnalités et différentes situations — chacun peut être un bon manager dans sa catégorie, et apprendre à évoluer d'une catégorie à l'autre. On peut naturellement évoluer d'un type de management à l'autre, parfois seul, parfois accompagné, et il est normal de changer de posture selon le niveau d'expérience de son équipe, une situation de crise, ou la maturité du collectif à travailler ensemble.
+    </div>
+
+    <div class="result-hero" id="resultHero">
+      <span class="eyebrow">Votre profil dominant</span>
+      <h1 id="resultName"></h1>
+      <div class="sub" id="resultSub"></div>
+    </div>
+
+    <div class="chart-wrap">
+      <svg id="pieChart" width="220" height="220" viewBox="0 0 220 220"></svg>
+      <div class="legend" id="legend"></div>
+    </div>
+
+    <div class="profile-card">
+      <h3>Ce qui vous caractérise</h3>
+      <p id="cardDescription"></p>
+    </div>
+
+    <div class="profile-card">
+      <h3>Vos forces</h3>
+      <p id="cardForce"></p>
+    </div>
+
+    <div class="profile-card">
+      <h3>Des axes à explorer</h3>
+      <div id="cardAxes"></div>
+    </div>
+
+    <div class="secondary-card" id="secondaryCard" style="display:none;">
+      <span class="eyebrow">Votre profil secondaire</span>
+      <div class="name" id="secondaryName"></div>
+      <button class="secondary-toggle" id="secondaryToggle" onclick="toggleSecondary()">Voir le profil complet →</button>
+      <div class="secondary-full" id="secondaryFull" style="display:none;">
+        <p id="secondaryDescription"></p>
+        <h4>Vos forces</h4>
+        <p id="secondaryForce"></p>
+        <h4>Des axes à explorer</h4>
+        <div id="secondaryAxes"></div>
+      </div>
+    </div>
+
+    <div class="reflection">
+      <span class="eyebrow">Une lecture plus personnelle</span>
+      <div class="synthesis-box" id="synthesisBox">
+        <div class="synthesis-loading" id="synthesisLoading">
+          <span class="spinner-sm"></span> Nous prenons le temps de lire ce que vous avez partagé...
+        </div>
+        <p class="synthesis-text" id="synthesisText" style="display:none;"></p>
+      </div>
+    </div>
+
+    <div class="cta-box">
+      <p>Ce résultat est un point de départ, pas une case. Si vous avez envie d'aller plus loin, un coaching individuel permet de mieux se connaître, avancer sur ce qui fait sens pour vous, monter en compétence en douceur, et prendre confiance en soi.</p>
+      <a class="btn btn-primary" href="https://otherformat.com/contact/" target="_blank">En discuter →</a>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-ghost" onclick="downloadCard()">Télécharger mon résultat</button>
+      <button class="btn btn-ghost" onclick="restartQuiz()">Refaire le test</button>
+    </div>
+
+    <footer class="note">Other Format — Bureau de coaching et transformation d'équipes</footer>
+  </div>
+
+</div>
+
+<canvas id="shareCanvas" width="1080" height="1080" style="display:none;"></canvas>
+
+<script>
+/* =========================================================
+   DATA
+========================================================= */
+const PROFILES = {
+  pilier: {
+    name: "Le Pilier",
+    color: "var(--c-pilier)",
+    hex: "#A8714C",
+    subtitle: "Présent, fédérateur, dans le concret",
+    description: "Vous êtes disponible pour vos équipes, à l'écoute, prêt à les aider à trouver des solutions ou des ressources. Ce qui vous anime, c'est le collectif : on est bien ensemble, on partage, on avance groupés. Homme ou femme de terrain, vous êtes dans le concret et l'exécution, le process, la logistique, ce qui fait qu'une équipe avance bien au quotidien.",
+    force: "Vous créez un vrai sentiment d'appartenance, une équipe où chacun se sent inclus, écouté, jamais seul. Votre présence rassure, elle donne de l'énergie, elle crée une cohésion où l'équipe se sent unie, avec des valeurs communes de partage et de bienveillance, et elle sait qu'elle peut compter sur vous en toutes circonstances. C'est une vraie force, et elle mérite d'être reconnue comme telle.",
+    axes: [
+      "À force d'être disponible pour tout le monde, où en êtes-vous, vous ? Est-ce que vous prenez le temps de vous poser vos propres questions, ou est-ce que votre énergie et votre temps sont absorbés presque entièrement par les autres, même si cela vous nourrit aussi énormément ?",
+      "Cette posture peut aussi être proche de ce que Taibi Kahler appelle le driver « Fais plaisir ». Ce qui peut être vécu par son équipe comme très confortable et bienveillant, on se sent pris en main, épaulé. Mais pour certains, plus indépendants, cette même proximité peut être vécue comme étouffante.",
+      "C'est un management qui peut aussi être bloquant car on a peur de prendre certaines décisions importantes pour ne pas « blesser », ce qui peut même desservir une équipe complète.",
+      "Aussi, quel est votre niveau d'énergie au quotidien ? Être disponible en continu pour tout le monde en demande beaucoup. Et si la piste à explorer, doucement, était d'apprendre à ne pas être partout et à responsabiliser un peu plus ?"
+    ]
+  },
+  perf: {
+    name: "Le Manager Performance",
+    color: "var(--c-perf)",
+    hex: "#C89B3C",
+    subtitle: "Énergique, orienté résultats",
+    description: "Ce qui vous anime, c'est de voir les résultats progresser, franchir les étapes, sentir que l'équipe avance concrètement vers ce qui a été fixé. Quand ça marche, vous savez le faire sentir, votre énergie est communicative.",
+    force: "Vous donnez à votre équipe des repères clairs et mesurables : chacun sait exactement où on en est, et ce qu'il reste à atteindre. Que l'objectif soit financier, un délai à tenir, un but à atteindre ou une étape à franchir, vous savez transformer un objectif en plaisir de l'effort, voire en dépassement de soi. Votre enthousiasme quand les résultats sont là est une vraie force d'entraînement pour l'équipe et l'ensemble de l'entreprise.",
+    axes: [
+      "Même si atteindre un objectif est une vraie source de plaisir et d'adrénaline, le chemin pour y arriver s'accompagne souvent de passages à vide, « est-ce que je vais y arriver ? », et il est difficile de garder l'énergie qu'on communique à son équipe, tout en portant ses propres doutes.",
+      "Une fois la victoire acquise (ce que les psychologues appellent l'Arrival Fallacy), l'énergie qui vous portait vers l'objectif retombe, et il n'est pas rare de se surprendre à penser « cette fois-ci j'arrête, c'est la dernière fois ». Et la machine se remet en marche : vous êtes déjà dans les prochains objectifs, sans avoir vraiment su si c'était ça que vous vouliez.",
+      "Quand on a ce rôle, on est un peu celui ou celle qui fait tourner l'entreprise, ce qui peut aussi donner un sentiment de puissance grisant. Une vigilance à garder : jusqu'où ce sentiment reste sain, sans glisser vers l'impression d'être seul indispensable ?",
+      "Pour maintenir le toujours plus, toujours plus haut, on est souvent obligé de s'entourer des plus performants, ce qui peut créer des tensions ou des jalousies dans l'équipe. On peut aussi, sans l'avoir choisi, se retrouver isolé, avec à chaque fois un peu plus de poids sur les épaules."
+    ]
+  },
+  referent: {
+    name: "Le Référent",
+    color: "var(--c-referent)",
+    hex: "#4F6D63",
+    subtitle: "Précis, solide, expert",
+    description: "Vous maîtrisez votre métier, avec un savoir-faire précis. Vous savez le transmettre avec exigence et clarté. Vous savez ce qu'il faut faire, à quel moment, comment débloquer une situation. Votre expertise est un repère solide pour toute l'équipe. Vous êtes LA personne qu'on vient voir quand on a besoin d'une réponse sûre, pas une approximation.",
+    force: "Dans un monde où beaucoup de choses sont floues, doivent aller vite et sont souvent imprécises, vous apportez une chose rare : une vraie maîtrise du sujet. Votre équipe, vos clients, vos partenaires ou votre direction n'ont pas à douter, ce que vous dites est solide, précis. C'est votre expérience qui parle : un cap net, une décision sûre, une expertise qui rassure tout le monde.",
+    axes: [
+      "Rester dans la maîtrise, dans le détail, dans le « je sais faire », ça rassure les autres, et ça vous rassure aussi. C'est une zone où l'on se sent légitime, parce que la compétence est là, visible, indiscutable.",
+      "Mais qu'est-ce qui se passe pour vous quand vous devez lâcher prise et laisser faire différemment, laisser quelqu'un d'autre décider ? Est-ce que ça vous irrite, ou est-ce que ça vous donne de l'énergie ?",
+      "Lâcher un peu de contrôle peut ressembler, de l'intérieur, à un vide inconfortable. Et si, sans le nommer pour vous-même, il y avait aussi une peur discrète d'être un jour « démasqué » comme moins compétent qu'on ne le croit ? On retrouve souvent ici ce qu'on appelle le syndrome de l'imposteur, la peur d'être dépassé, la difficulté à accepter le changement, et l'idée que ses connaissances ou son savoir-faire pourraient être remis en question.",
+      "Une équipe qui s'appuie beaucoup sur votre expertise peut, avec le temps, perdre en autonomie et devenir plus rigide face au changement, simplement parce qu'elle n'a jamais eu à apprendre à se débrouiller sans vous.",
+      "Garder le contrôle, c'est une façon de rester dans une zone où l'on se sent utile, compétent, en sécurité. Mais ça peut être intéressant de tester une posture différente de celle qui vous a toujours réussi jusqu'ici. Accepter que vous ne maîtrisez pas tout, et le dire, apprendre des autres et les voir grandir, ça peut vous faire grandir aussi."
+    ]
+  },
+  coach: {
+    name: "Le Manager Coach",
+    color: "var(--c-coach)",
+    hex: "#B98B8B",
+    subtitle: "À l'écoute, révélateur de talents",
+    description: "Vous prenez le temps d'écouter, vraiment, chacun dans votre équipe. Vous savez repérer ce que les gens ne voient pas toujours eux-mêmes, un talent, une capacité, une force qui ne demande qu'à être révélée. Les décisions se prennent avec les autres, jamais contre eux : vous créez de l'empathie, de la confiance, un espace où chacun peut grandir à son rythme.",
+    force: "Votre plus grand plaisir, c'est de faire grandir les personnes. Voir quelqu'un prendre confiance, oser, réussir là où il doutait de lui : c'est une transformation dont vous êtes souvent le déclencheur, même sans toujours le mesurer.",
+    axes: [
+      "Même si ce type de management est celui qui a l'approche la plus adaptée à la nouvelle génération, et qui permet souvent aux équipes de garder le cap en gardant du sens et du plaisir dans leur travail, il y a un petit warning à garder pour certains de ne pas dépasser complètement son rôle de manager.",
+      "Sans le vouloir, on peut croire qu'on « sait ce que l'autre pense » ou « ce qui est bon pour lui », alors que ce n'est pas toujours le cas et ça dit aussi souvent quelque chose de soi d'abord. Ce qu'on n'est pas toujours capable de démêler si on n'a pas été suffisamment entraîné aux méthodes de coaching et accompagné.",
+      "Un des points clés dans ce rôle de manager coach est de développer l'écoute active : savoir écouter sans couper la parole, en laissant émerger chez l'autre ses propres pensées, sans jugement, sans anticiper une solution à donner. C'est plus difficile, mais au final plus intéressant, que de simplement donner des conseils, et ça laisse à la personne l'espace pour découvrir vraiment qui elle est et ses propres modes de fonctionnement.",
+      "Un biais classique est aussi d'avoir envie que les personnes avancent vite dans leur transformation. Mais tout le monde n'avance pas au même rythme, et ce n'est pas à vous de décider du bon tempo."
+    ]
+  },
+  leader: {
+    name: "Le Leader",
+    color: "var(--c-leader)",
+    hex: "#5B4B6E",
+    subtitle: "Inspirant, porté par sa conviction",
+    description: "Vous embarquez les autres par votre conviction. Vous inspirez confiance, et les gens vous suivent, souvent sans même avoir besoin de tout comprendre à l'avance. Vous savez responsabiliser vite, faire confiance, laisser de la place aux autres pour agir. Vous savez prendre des décisions et convaincre les autres de vous suivre, si vous y croyez vraiment.",
+    force: "Il y a quelque chose de précieux dans votre capacité à donner envie de vous suivre. Vous savez transformer une conviction personnelle en énergie collective, et donner à chacun l'impression qu'il ou elle a une vraie place dans la réussite du collectif. Ce n'est pas de l'autorité imposée, c'est de l'adhésion gagnée. Au moment de prendre les décisions, vous savez prendre en compte l'ensemble des informations : l'énergie générale de l'entreprise et des collaborateurs, les signaux donnés par votre marché, même les signaux faibles, et la stratégie de la direction. Vous savez demander l'avis de personnes clés pour bien comprendre une situation, sans avoir besoin de demander à tout le monde. Tout en étant clair sur vos propres convictions, et c'est ça qui donne envie de vous suivre : vous êtes aligné avec vous-même.",
+    axes: [
+      "Être le Leader, ça se construit avec le temps pour gagner la confiance de tous : des équipes, de la direction, de votre marché, de la communication si c'est vous qui êtes mis en avant. Et plus tout est construit autour de vous, plus la pression est importante.",
+      "C'est aussi une position qui, petit à petit, peut créer une forme de solitude, difficile à avouer, avec peu de personnes à qui confier un vrai doute, ce que le psychiatre Irvin Yalom, qui a beaucoup écrit sur le sens de l'existence, appelait la solitude existentielle : celle qu'on peut ressentir même bien entouré, propre aux moments où la décision et la responsabilité finale nous reviennent, à nous seul.",
+      "Il y a aussi une pression plus silencieuse : celle de correspondre en continu à une image, celle du leader fort, inspirant, jamais vraiment en doute. À force, cette image peut se mettre à peser comme un rôle qu'on joue, jusqu'à ne plus très bien savoir où elle s'arrête et où vous commencez vraiment.",
+      "Garder un leadership authentique, c'est un leadership qui reste connecté à ses convictions humaines profondes. Cela demande aussi d'être à l'aise avec toutes les parts de soi (certains psychologues parlent des différentes entités qu'on porte tous en soi), y compris celles qui doutent, qui ont peur, qui voudraient parfois se reposer sur quelqu'un d'autre. Ces différentes parts ne sont pas des faiblesses. Elles font partie de vous, et pouvoir en exposer certaines vous donne, avec le temps, encore plus d'authenticité.",
+      "Il y a un autre point de vigilance à avoir : il faut se mettre des protections pour votre grande sensibilité, car sous vos dehors de force inébranlable, vous avez quand même besoin d'être rassuré, et vous œuvrez pour le collectif. Et quand une critique dans votre dos arrive, elle est forcément vécue comme très blessante chez vous. Ce n'est pas une question d'ego : vous la vivez comme une trahison qui vous touche particulièrement, car tout ce que vous faites, c'est pour faire grandir la société, mais aussi tout le monde.",
+      "Faire régulièrement, avec ses équipes, des ateliers accompagnés par des coachs permet de sonder ce qui se passe vraiment dans le collectif, et de faire adhérer l'ensemble de l'équipe, en tenant compte de ce qu'ils pensent vraiment."
+    ]
+  },
+  vision: {
+    name: "Le Porteur de vision",
+    color: "var(--c-vision)",
+    hex: "#7C8F5E",
+    subtitle: "Le stade le plus abouti du management",
+    description: "Votre rôle se concentre sur la création d'une vision partagée, de valeurs communes, au-delà des objectifs immédiats. Vous créez les conditions pour stimuler l'intelligence collective, afin que chaque personne devienne co-productrice de cette vision et co-responsable de sa mise en œuvre. Vous accompagnez la transformation des équipes et de l'entreprise pour créer un vrai changement de dynamique. C'est aussi le stade le plus abouti dans l'évolution d'une équipe, le Graal du manager : passer d'un collectif qui exécute à un collectif qui garde la vision, comprend, s'approprie, et avance ensemble vers un même objectif.",
+    force: "Le sens ne tombe jamais tout fait du ciel, comme le rappelait le psychiatre Irvin Yalom à propos de l'existence elle-même : il se construit. Il en va de même pour une vision d'entreprise : une équipe qui comprend sa direction stratégique n'a pas simplement reçu un objectif, elle a participé à lui donner un sens qui va au-delà du chiffre à atteindre. Même si ce n'est pas vous qui décidez seul de cette direction car elle est souvent donnée ou orientée par la direction de l'entreprise, vous en êtes le garant, celui qui veille à ce qu'elle reste vivante sur le terrain, et qui aide chacun à comprendre en quoi son travail y contribue vraiment. C'est ce qui distingue un objectif qu'on exécute d'un objectif qu'on comprend : le sens ne remplace jamais la performance, il la renforce. Une équipe qui sait où elle avance et pourquoi, et pas seulement vers quoi, avance généralement mieux, plus longtemps, et avec moins de tension. C'est ce manager qui transforme un groupe de collaborateurs en un collectif vraiment engagé.",
+    axes: [
+      "Penser loin, penser large, penser au-delà de l'immédiat, c'est une vraie force, mais elle peut être difficile à faire comprendre. Ce que vous voyez clairement peut rester flou pour ceux qui n'ont pas encore fait le même chemin de réflexion, en dessous comme au-dessus de vous dans l'organisation.",
+      "Il y a aussi une question de temps qui vous met souvent en tension avec votre entourage professionnel : les résultats de votre travail sont souvent perceptibles à moyen ou long terme, rarement dans l'instant. Cela peut créer de l'impatience du côté de la direction ou des actionnaires, qui attendent parfois des preuves plus immédiates.",
+      "Même à ce niveau, la vision seule ne suffit pas toujours. Selon les circonstances, il peut être nécessaire de redescendre vers une posture plus directive ou plus concrète, celle du Référent ou du Pilier, avant de reprendre la hauteur. Ce n'est pas un recul. C'est ce qui permet à la vision de rester connectée au réel plutôt que de flotter au-dessus de lui."
+    ]
+  }
+};
+
+const PROFILE_ORDER = ["pilier","perf","referent","coach","leader","vision"];
+
+const QUESTIONS = [
+  {
+    type:"choice",
+    text:"Un projet prend du retard et la tension monte dans l'équipe. Votre premier réflexe :",
+    options:[
+      {p:"pilier", t:"Je me pose avec chaque équipe ou chaque personne pour les aider à mettre en œuvre ce qu'il faut pour y arriver"},
+      {p:"perf", t:"Je me concentre sur l'atteinte des objectifs, quitte à devoir faire des choix difficiles en chemin"},
+      {p:"referent", t:"Je reprends la main moi-même sur les points bloquants"},
+      {p:"coach", t:"Je cherche à comprendre ce qu'il s'est passé dans la dynamique de l'équipe, et comment les rebooster"},
+      {p:"leader", t:"J'essaie de comprendre les origines du problème et j'en discute avec les personnes clés concernées, pour qu'ils trouvent les moyens à mettre en œuvre directement actionnables"},
+      {p:"vision", t:"Je remets les choses en perspective et je garde le cap pour un objectif plus large"}
+    ]
+  },
+  {
+    type:"choice",
+    text:"Ce qui vous motive le plus dans votre rôle...",
+    options:[
+      {p:"pilier", t:"La bonne ambiance et l'énergie du groupe"},
+      {p:"perf", t:"Voir les résultats progresser"},
+      {p:"referent", t:"Transmettre votre expertise"},
+      {p:"coach", t:"Voir les gens progresser et prendre confiance"},
+      {p:"leader", t:"Inspirer et donner une direction"},
+      {p:"vision", t:"Créer du sens au-delà des objectifs immédiats"}
+    ]
+  },
+  {
+    type:"choice",
+    text:"Votre plus grande crainte en tant que manager...",
+    options:[
+      {p:"pilier", t:"Ne plus savoir où est la limite entre travail et amitié"},
+      {p:"perf", t:"Mettre trop de pression et perdre l'humain"},
+      {p:"referent", t:"Être remis en question sur votre expertise"},
+      {p:"coach", t:"Créer des jalousies en étant proche de certains"},
+      {p:"leader", t:"Vous sentir seul, porté par votre seul charisme"},
+      {p:"vision", t:"Ne pas être compris, ni en dessous ni au-dessus"}
+    ]
+  },
+  {
+    type:"choice",
+    text:"Une nouvelle recrue arrive dans l'équipe, vous...",
+    options:[
+      {p:"pilier", t:"Prenez le temps de la connaître personnellement"},
+      {p:"perf", t:"Lui donnez des objectifs clairs à atteindre vite"},
+      {p:"referent", t:"Lui transmettez le mode opératoire précis à suivre"},
+      {p:"coach", t:"L'aidez à identifier ses propres talents"},
+      {p:"leader", t:"La responsabilisez rapidement, tout en l'accompagnant à mettre ses meilleures compétences en action"},
+      {p:"vision", t:"Prenez le temps de lui expliquer la stratégie et les valeurs de l'équipe, et comment elle peut y contribuer"}
+    ]
+  },
+  {
+    type:"choice",
+    text:"Comment prenez-vous les décisions importantes pour vos équipes ?",
+    options:[
+      {p:"pilier", t:"Je réfléchis à l'efficacité et à la meilleure façon de faire travailler mes équipes ensemble"},
+      {p:"perf", t:"Je me base sur les objectifs, les chiffres et le planning à tenir"},
+      {p:"referent", t:"Je réfléchis à l'expertise de chacun pour distribuer les tâches, puis je tranche moi-même"},
+      {p:"coach", t:"J'en discute avec mon équipe, en pensant à l'impact que la décision aura sur chacun"},
+      {p:"leader", t:"Je prends en compte l'avis de mon équipe, mais la décision finale m'appartient"},
+      {p:"vision", t:"Je m'assure que la décision est alignée avec la direction qu'on s'est donnée ensemble"}
+    ]
+  },
+  {
+    type:"choice",
+    text:"Ce qu'on dit souvent de vous...",
+    options:[
+      {p:"pilier", t:"« Toujours disponible pour nous »"},
+      {p:"perf", t:"« Objectifs à atteindre clairs. Focus résultats ! »"},
+      {p:"referent", t:"« LA personne qui sait, le référent »"},
+      {p:"coach", t:"« Révèle des choses qu'on ne voyait pas en nous »"},
+      {p:"leader", t:"« Nous inspire, on le suit »"},
+      {p:"vision", t:"« Donne du sens à ce qu'on fait »"}
+    ]
+  },
+  {
+    type:"choice",
+    text:"Face au changement...",
+    options:[
+      {p:"pilier", t:"Vous êtes présent pour chacun à son rythme"},
+      {p:"perf", t:"Vous gardez le cap sur les objectifs, coûte que coûte"},
+      {p:"referent", t:"Vous préférez la stabilité et le cadre connu"},
+      {p:"coach", t:"Vous en faites une opportunité de développement individuel"},
+      {p:"leader", t:"Vous embarquez l'équipe par votre conviction"},
+      {p:"vision", t:"Vous accompagnez l'ensemble des équipes à changer leur façon de voir les choses, pas seulement leur façon de faire"}
+    ]
+  },
+  {
+    type:"choice",
+    text:"Quand la pression monte...",
+    options:[
+      {p:"pilier", t:"Vous redoublez de présence auprès de votre équipe"},
+      {p:"perf", t:"Vous vous concentrez sur les indicateurs à tenir"},
+      {p:"referent", t:"Vous reprenez le contrôle direct des sujets critiques"},
+      {p:"coach", t:"Vous prenez le temps de comprendre ce que chacun traverse"},
+      {p:"leader", t:"Vous gardez une posture rassurante, même si vous vous sentez seul(e)"},
+      {p:"vision", t:"Vous revenez à l'essentiel pour ne pas perdre le sens de l'effort collectif"}
+    ]
+  },
+  {
+    type:"choice",
+    text:"Ce qui vous ferait le plus plaisir à entendre...",
+    options:[
+      {p:"pilier", t:"« On sait qu'on peut compter sur toi »"},
+      {p:"perf", t:"« Grâce à toi, on a dépassé nos objectifs »"},
+      {p:"referent", t:"« Personne ne maîtrise le sujet comme toi »"},
+      {p:"coach", t:"« Je me sens différent(e) depuis qu'on travaille avec toi »"},
+      {p:"leader", t:"« On t'a suivi les yeux fermés, et on avait raison »"},
+      {p:"vision", t:"« On sait enfin où on va, et pourquoi »"}
+    ]
+  },
+  {
+    type:"open",
+    id:"open1",
+    text:"Repensez à une situation récente où votre rôle de manager vous a mis en difficulté.",
+    help:"Qu'est-ce qui s'est passé, et qu'est-ce que ça vous a fait ressentir ?",
+    placeholder:"Prenez le temps que vous voulez pour répondre..."
+  },
+  {
+    type:"open",
+    id:"open2",
+    text:"Si vous pouviez changer une seule chose dans votre façon de manager aujourd'hui, ce serait quoi ?",
+    help:"",
+    placeholder:"Une phrase suffit, ou plus si vous voulez développer..."
+  }
+];
+
+/* =========================================================
+   STATE
+========================================================= */
+let currentStep = 0;
+let selections = QUESTIONS.map(()=>[]); // for choice questions: array of profile keys selected
+let openAnswers = {open1:"", open2:""};
+
+function startQuiz(){
+  switchScreen('screen-quiz');
+  renderStep();
+}
+
+function switchScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function renderStep(){
+  const q = QUESTIONS[currentStep];
+  const total = QUESTIONS.length;
+  document.getElementById('progressFill').style.width = ((currentStep)/(total-1))*100 + '%';
+  document.getElementById('progressLabel').textContent = `Question ${currentStep+1} / ${total}`;
+
+  const area = document.getElementById('questionArea');
+
+  if(q.type === 'choice'){
+    const picked = selections[currentStep];
+    area.innerHTML = `
+      <div class="q-title">${q.text}</div>
+      <div class="q-help">Choisissez jusqu'à 2 réponses qui vous ressemblent le plus.</div>
+      <div class="options">
+        ${q.options.map((o,i)=>`
+          <button class="option ${picked.includes(i)?'selected':''}" data-i="${i}" onclick="toggleOption(${i})">
+            <span class="box"></span>
+            <span>${o.t}</span>
+          </button>
+        `).join('')}
+      </div>
+    `;
+  } else {
+    area.innerHTML = `
+      <div class="q-title">${q.text}</div>
+      ${q.help ? `<div class="q-help">${q.help}</div>` : ''}
+      <textarea class="open-textarea" id="openInput" placeholder="${q.placeholder}">${openAnswers[q.id]}</textarea>
+    `;
+    document.getElementById('openInput').addEventListener('input', (e)=>{
+      openAnswers[q.id] = e.target.value;
+      updateNextButton();
+    });
+  }
+
+  document.getElementById('btnPrev').style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+  updateNextButton();
+}
+
+function toggleOption(i){
+  const picked = selections[currentStep];
+  const idx = picked.indexOf(i);
+  if(idx > -1){
+    picked.splice(idx,1);
+  } else {
+    if(picked.length >= 2){
+      // subtle feedback: flash the oldest selection
+      const opts = document.querySelectorAll('.option');
+      opts[picked[0]].style.transform = 'translateX(4px)';
+      setTimeout(()=>{opts[picked[0]].style.transform='';}, 150);
+      return;
+    }
+    picked.push(i);
+  }
+  renderStep();
+}
+
+function updateNextButton(){
+  const q = QUESTIONS[currentStep];
+  const btn = document.getElementById('btnNext');
+  if(q.type === 'choice'){
+    btn.disabled = selections[currentStep].length === 0;
+  } else {
+    btn.disabled = openAnswers[q.id].trim().length === 0;
+  }
+  btn.textContent = currentStep === QUESTIONS.length - 1 ? 'Voir mon résultat' : 'Suivant';
+}
+
+function nextStep(){
+  if(currentStep < QUESTIONS.length - 1){
+    currentStep++;
+    renderStep();
+  } else {
+    computeResults();
+  }
+}
+
+function prevStep(){
+  if(currentStep > 0){
+    currentStep--;
+    renderStep();
+  }
+}
+
+/* =========================================================
+   RESULTS
+========================================================= */
+function computeResults(){
+  switchScreen('screen-loading');
+
+  const scores = {pilier:0, perf:0, referent:0, coach:0, leader:0, vision:0};
+  QUESTIONS.forEach((q, qi)=>{
+    if(q.type === 'choice'){
+      selections[qi].forEach(i=>{
+        scores[q.options[i].p]++;
+      });
+    }
+  });
+
+  setTimeout(()=>{
+    renderResults(scores);
+    switchScreen('screen-results');
+  }, 1100);
+}
+
+function renderResults(scores){
+  const sorted = PROFILE_ORDER.map(k=>({key:k, score:scores[k]})).sort((a,b)=>b.score-a.score);
+  const dominant = sorted[0];
+  const secondary = sorted[1] && sorted[1].score > 0 ? sorted[1] : null;
+  const total = sorted.reduce((s,x)=>s+x.score,0) || 1;
+
+  const dp = PROFILES[dominant.key];
+
+  document.getElementById('resultHero').style.setProperty('--profile-color', dp.color);
+  document.getElementById('resultName').textContent = dp.name;
+  document.getElementById('resultName').style.color = dp.hex;
+  document.getElementById('resultSub').textContent = dp.subtitle;
+
+  document.getElementById('cardDescription').textContent = dp.description;
+  document.getElementById('cardForce').textContent = dp.force;
+  document.getElementById('cardAxes').innerHTML = dp.axes.map(a=>`<p>${a}</p>`).join('');
+  document.querySelectorAll('.profile-card h3').forEach(h=>h.style.color = dp.hex);
+  document.querySelectorAll('.reflection-item').forEach(el=>el.style.borderLeftColor = dp.hex);
+
+  if(secondary){
+    const sp = PROFILES[secondary.key];
+    document.getElementById('secondaryCard').style.display = 'block';
+    document.getElementById('secondaryName').textContent = sp.name;
+    document.getElementById('secondaryName').style.color = sp.hex;
+    document.getElementById('secondaryDescription').textContent = sp.description;
+    document.getElementById('secondaryForce').textContent = sp.force;
+    document.getElementById('secondaryAxes').innerHTML = sp.axes.map(a=>`<p>${a}</p>`).join('');
+    // reset toggle state
+    document.getElementById('secondaryFull').style.display = 'none';
+    document.getElementById('secondaryToggle').textContent = 'Voir le profil complet →';
+  } else {
+    document.getElementById('secondaryCard').style.display = 'none';
+  }
+
+  drawPieChart(sorted, total, dominant.key);
+  drawLegend(sorted, total, dominant.key);
+
+  generateSynthesis(dp, secondary ? PROFILES[secondary.key] : null, openAnswers.open1, openAnswers.open2);
+}
+
+function drawPieChart(sorted, total, dominantKey){
+  const svg = document.getElementById('pieChart');
+  const cx=110, cy=110, r=80;
+  let angle = -90; // start at top
+  let paths = '';
+
+  sorted.forEach(item=>{
+    if(item.score === 0) return;
+    const p = PROFILES[item.key];
+    const slice = (item.score/total) * 360;
+    const isDominant = item.key === dominantKey;
+    const radius = isDominant ? r+4 : r;
+
+    const start = polar(cx,cy,radius,angle);
+    const end = polar(cx,cy,radius,angle+slice);
+    const largeArc = slice > 180 ? 1 : 0;
+
+    paths += `<path d="M${cx},${cy} L${start.x},${start.y} A${radius},${radius} 0 ${largeArc} 1 ${end.x},${end.y} Z"
+                fill="${p.hex}" opacity="${isDominant?1:0.85}" stroke="${'#EDE9DC'}" stroke-width="2"/>`;
+    angle += slice;
+  });
+
+  svg.innerHTML = `<circle cx="${cx}" cy="${cy}" r="${r+10}" fill="none"/>${paths}<circle cx="${cx}" cy="${cy}" r="34" fill="#EDE9DC"/>`;
+}
+
+function polar(cx,cy,r,angleDeg){
+  const a = (angleDeg * Math.PI)/180;
+  return {x: cx + r*Math.cos(a), y: cy + r*Math.sin(a)};
+}
+
+function drawLegend(sorted, total, dominantKey){
+  const legend = document.getElementById('legend');
+  legend.innerHTML = sorted.map(item=>{
+    const p = PROFILES[item.key];
+    const pct = Math.round((item.score/total)*100);
+    return `<div class="legend-item ${item.key===dominantKey?'dominant':''}">
+      <span class="legend-dot" style="background:${p.hex}"></span>${p.name} · ${pct}%
+    </div>`;
+  }).join('');
+}
+
+function toggleSecondary(){
+  const full = document.getElementById('secondaryFull');
+  const btn = document.getElementById('secondaryToggle');
+  const isOpen = full.style.display === 'block';
+  full.style.display = isOpen ? 'none' : 'block';
+  btn.textContent = isOpen ? 'Voir le profil complet →' : 'Réduire ↑';
+}
+
+function restartQuiz(){
+  currentStep = 0;
+  selections = QUESTIONS.map(()=>[]);
+  openAnswers = {open1:"", open2:""};
+  document.getElementById('synthesisLoading').style.display = 'flex';
+  document.getElementById('synthesisText').style.display = 'none';
+  switchScreen('screen-intro');
+}
+
+/* =========================================================
+   SYNTHÈSE PERSONNALISÉE (IA)
+========================================================= */
+async function generateSynthesis(dominant, secondary, open1, open2){
+  const loadingEl = document.getElementById('synthesisLoading');
+  const textEl = document.getElementById('synthesisText');
+  loadingEl.style.display = 'flex';
+  textEl.style.display = 'none';
+
+  try{
+    const response = await fetch("/.netlify/functions/synthesis", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        dominant: { name: dominant.name, description: dominant.description },
+        secondary: secondary ? { name: secondary.name } : null,
+        open1, open2
+      })
+    });
+    const data = await response.json();
+    const text = (data.text || "").trim();
+    if(!text) throw new Error('empty');
+    textEl.textContent = text;
+  } catch(err){
+    // Repli si l'appel échoue (fonction non déployée, clé API absente, etc.)
+    textEl.textContent = `Vous avez partagé : « ${open1 || '...'} ». Et vous aimeriez faire évoluer : « ${open2 || '...'} ». C'est déjà une vraie matière de réflexion, qui mériterait d'être creusée plus loin avec un accompagnement individuel.`;
+  } finally {
+    loadingEl.style.display = 'none';
+    textEl.style.display = 'block';
+  }
+}
+
+/* =========================================================
+   DOWNLOAD SHARE CARD
+========================================================= */
+function downloadCard(){
+  const scores = {pilier:0, perf:0, referent:0, coach:0, leader:0, vision:0};
+  QUESTIONS.forEach((q, qi)=>{
+    if(q.type === 'choice') selections[qi].forEach(i=>scores[q.options[i].p]++);
+  });
+  const sorted = PROFILE_ORDER.map(k=>({key:k, score:scores[k]})).sort((a,b)=>b.score-a.score);
+  const dp = PROFILES[sorted[0].key];
+
+  const canvas = document.getElementById('shareCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  ctx.fillStyle = '#EDE9DC';
+  ctx.fillRect(0,0,W,H);
+
+  // olive band
+  ctx.fillStyle = '#C7CBA0';
+  ctx.fillRect(0, H-180, W, 180);
+
+  // ocre circle logo
+  ctx.beginPath();
+  ctx.arc(90,90,42,0,Math.PI*2);
+  ctx.fillStyle = '#BE8A2E';
+  ctx.fill();
+  ctx.fillStyle = '#EDE9DC';
+  ctx.font = "600 30px 'Red Hat Display', Arial";
+  ctx.textAlign='center';
+  ctx.textBaseline='middle';
+  ctx.fillText('OF', 90, 92);
+
+  ctx.textAlign = 'left';
+  ctx.fillStyle = '#57543F';
+  ctx.font = '600 22px Arial';
+  ctx.fillText('OTHER FORMAT — QUICK TEST MANAGER', 150, 100);
+
+  ctx.fillStyle = dp.hex;
+  ctx.font = "700 60px 'Red Hat Display', Arial";
+  wrapText(ctx, dp.name, 80, 320, W-160, 74);
+
+  ctx.fillStyle = '#2B2A24';
+  ctx.font = "500 28px 'Red Hat Display', Arial";
+  ctx.fillText(dp.subtitle, 80, 470);
+
+  ctx.fillStyle = '#2f331f';
+  ctx.font = '500 26px Arial';
+  ctx.fillText('otherformat.com', 80, H-90);
+
+  const link = document.createElement('a');
+  link.download = 'quel-manager-etes-vous-'+dp.key+'.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+function wrapText(ctx, text, x, y, maxWidth, lineHeight){
+  const words = text.split(' ');
+  let line = '';
+  let lines = [];
+  for(let n=0;n<words.length;n++){
+    const testLine = line + words[n] + ' ';
+    if(ctx.measureText(testLine).width > maxWidth && n>0){
+      lines.push(line);
+      line = words[n] + ' ';
+    } else {
+      line = testLine;
+    }
+  }
+  lines.push(line);
+  lines.forEach((l,i)=>ctx.fillText(l.trim(), x, y + i*lineHeight));
+}
+</script>
+</body>
+</html>
