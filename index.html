@@ -262,6 +262,13 @@
   .cta-box a.btn-primary{display:inline-block;text-decoration:none;}
 
   .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:10px;}
+  .share-fallback{
+    display:flex;gap:20px;justify-content:center;margin-top:16px;
+  }
+  .share-fallback-link{
+    font-size:13.5px;font-weight:600;color:var(--ocre-dark);text-decoration:none;
+  }
+  .share-fallback-link:hover{text-decoration:underline;}
 
   footer.note{
     text-align:center;font-size:11.5px;color:#8B876F;margin-top:50px;
@@ -271,6 +278,23 @@
     #app{padding:32px 18px 60px;}
     .intro h1{font-size:27px;}
     .q-title{font-size:20px;}
+  }
+  @media print{
+    body.printing #app > .brandmark{ margin-bottom:24px; }
+    body.printing .screen{ display:none !important; }
+    body.printing .screen.active{ display:block !important; }
+    body.printing .actions,
+    body.printing .btn,
+    body.printing .cta-box a{ display:none !important; }
+    body.printing .cta-box{ background:#F0EFE4 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body.printing .secondary-toggle{ display:none; }
+    body.printing .secondary-full{ display:block !important; }
+    body.printing .chart-wrap svg{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body.printing .cadrage,
+    body.printing .profile-card,
+    body.printing .secondary-card,
+    body.printing .synthesis-box{ -webkit-print-color-adjust:exact; print-color-adjust:exact; break-inside:avoid; }
+    body.printing footer.note{ margin-top:20px; }
   }
 </style>
 </head>
@@ -382,16 +406,21 @@
     </div>
 
     <div class="actions">
-      <button class="btn btn-ghost" onclick="downloadCard()">Télécharger mon résultat</button>
+      <button class="btn btn-primary" id="btnLinkedIn" onclick="shareLinkedIn()">Partager sur LinkedIn</button>
+      <button class="btn btn-ghost" onclick="shareFriend()">Envoyer à un ami</button>
+      <button class="btn btn-ghost" onclick="downloadPDF()">Télécharger le PDF</button>
       <button class="btn btn-ghost" onclick="restartQuiz()">Refaire le test</button>
+    </div>
+
+    <div class="share-fallback" id="shareFallback" style="display:none;">
+      <a id="waLink" class="share-fallback-link" target="_blank" rel="noopener">Envoyer sur WhatsApp →</a>
+      <a id="mailLink" class="share-fallback-link">Envoyer par email →</a>
     </div>
 
     <footer class="note">Other Format — Bureau de coaching et transformation d'équipes</footer>
   </div>
 
 </div>
-
-<canvas id="shareCanvas" width="1080" height="1080" style="display:none;"></canvas>
 
 <script>
 /* =========================================================
@@ -617,6 +646,7 @@ const QUESTIONS = [
    STATE
 ========================================================= */
 let currentStep = 0;
+let currentDominantKey = null;
 let selections = QUESTIONS.map(()=>[]); // for choice questions: array of profile keys selected
 let openAnswers = {open1:"", open2:""};
 
@@ -742,6 +772,7 @@ function renderResults(scores){
   const total = sorted.reduce((s,x)=>s+x.score,0) || 1;
 
   const dp = PROFILES[dominant.key];
+  currentDominantKey = dominant.key;
 
   document.getElementById('resultHero').style.setProperty('--profile-color', dp.color);
   document.getElementById('resultName').textContent = dp.name;
@@ -830,6 +861,7 @@ function restartQuiz(){
   openAnswers = {open1:"", open2:""};
   document.getElementById('synthesisLoading').style.display = 'flex';
   document.getElementById('synthesisText').style.display = 'none';
+  document.getElementById('shareFallback').style.display = 'none';
   switchScreen('screen-intro');
 }
 
@@ -869,76 +901,45 @@ async function generateSynthesis(dominant, secondary, open1, open2){
 }
 
 /* =========================================================
-   DOWNLOAD SHARE CARD
+   ENVOYER À UN AMI (partage natif, ou repli WhatsApp/email)
 ========================================================= */
-function downloadCard(){
-  const scores = {pilier:0, perf:0, referent:0, coach:0, leader:0, vision:0};
-  QUESTIONS.forEach((q, qi)=>{
-    if(q.type === 'choice') selections[qi].forEach(i=>scores[q.options[i].p]++);
-  });
-  const sorted = PROFILE_ORDER.map(k=>({key:k, score:scores[k]})).sort((a,b)=>b.score-a.score);
-  const dp = PROFILES[sorted[0].key];
+function shareFriend(){
+  if(!currentDominantKey) return;
+  const dp = PROFILES[currentDominantKey];
+  const pageUrl = window.location.origin + '/resultat/' + currentDominantKey + '.html';
+  const title = `Mon profil manager : ${dp.name} — Other Format`;
+  const text = `J'ai fait le test "Quel type de manager êtes-vous ?" chez Other Format. Mon profil : ${dp.name}. Envie d'essayer ?`;
 
-  const canvas = document.getElementById('shareCanvas');
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
+  if(navigator.share){
+    navigator.share({ title, text, url: pageUrl }).catch(()=>{});
+    return;
+  }
 
-  ctx.fillStyle = '#EDE9DC';
-  ctx.fillRect(0,0,W,H);
-
-  // olive band
-  ctx.fillStyle = '#C7CBA0';
-  ctx.fillRect(0, H-180, W, 180);
-
-  // ocre circle logo
-  ctx.beginPath();
-  ctx.arc(90,90,42,0,Math.PI*2);
-  ctx.fillStyle = '#BE8A2E';
-  ctx.fill();
-  ctx.fillStyle = '#EDE9DC';
-  ctx.font = "600 30px 'Red Hat Display', Arial";
-  ctx.textAlign='center';
-  ctx.textBaseline='middle';
-  ctx.fillText('OF', 90, 92);
-
-  ctx.textAlign = 'left';
-  ctx.fillStyle = '#57543F';
-  ctx.font = '600 22px Arial';
-  ctx.fillText('OTHER FORMAT — QUICK TEST MANAGER', 150, 100);
-
-  ctx.fillStyle = dp.hex;
-  ctx.font = "700 60px 'Red Hat Display', Arial";
-  wrapText(ctx, dp.name, 80, 320, W-160, 74);
-
-  ctx.fillStyle = '#2B2A24';
-  ctx.font = "500 28px 'Red Hat Display', Arial";
-  ctx.fillText(dp.subtitle, 80, 470);
-
-  ctx.fillStyle = '#2f331f';
-  ctx.font = '500 26px Arial';
-  ctx.fillText('otherformat.com', 80, H-90);
-
-  const link = document.createElement('a');
-  link.download = 'quel-manager-etes-vous-'+dp.key+'.png';
-  link.href = canvas.toDataURL('image/png');
-  link.click();
+  // Repli desktop : WhatsApp Web + email
+  const waUrl = 'https://wa.me/?text=' + encodeURIComponent(text + ' ' + pageUrl);
+  const mailUrl = 'mailto:?subject=' + encodeURIComponent(title) + '&body=' + encodeURIComponent(text + '\n\n' + pageUrl);
+  document.getElementById('waLink').href = waUrl;
+  document.getElementById('mailLink').href = mailUrl;
+  document.getElementById('shareFallback').style.display = 'flex';
 }
 
-function wrapText(ctx, text, x, y, maxWidth, lineHeight){
-  const words = text.split(' ');
-  let line = '';
-  let lines = [];
-  for(let n=0;n<words.length;n++){
-    const testLine = line + words[n] + ' ';
-    if(ctx.measureText(testLine).width > maxWidth && n>0){
-      lines.push(line);
-      line = words[n] + ' ';
-    } else {
-      line = testLine;
-    }
-  }
-  lines.push(line);
-  lines.forEach((l,i)=>ctx.fillText(l.trim(), x, y + i*lineHeight));
+/* =========================================================
+   PARTAGER SUR LINKEDIN
+========================================================= */
+function shareLinkedIn(){
+  if(!currentDominantKey) return;
+  const pageUrl = window.location.origin + '/resultat/' + currentDominantKey + '.html';
+  const shareUrl = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(pageUrl);
+  window.open(shareUrl, '_blank', 'width=600,height=600');
+}
+
+/* =========================================================
+   TÉLÉCHARGER LE PDF (impression du navigateur, mise en page dédiée)
+========================================================= */
+function downloadPDF(){
+  document.body.classList.add('printing');
+  window.print();
+  setTimeout(()=>{ document.body.classList.remove('printing'); }, 500);
 }
 </script>
 </body>
