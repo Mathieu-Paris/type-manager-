@@ -860,8 +860,8 @@ async function generateSynthesis(dominant, secondary, open1, open2){
     if(!text) throw new Error('Réponse vide. Détail : ' + JSON.stringify(data).slice(0,200));
     textEl.textContent = text;
   } catch(err){
-    // DEBUG TEMPORAIRE : affiche l'erreur exacte pour diagnostiquer, à retirer une fois résolu
-    textEl.innerHTML = `Vous avez partagé : « ${open1 || '...'} ». Et vous aimeriez faire évoluer : « ${open2 || '...'} ». C'est déjà une vraie matière de réflexion, qui mériterait d'être creusée plus loin avec un accompagnement individuel.<br><br><span style="font-size:11px;color:#B33;font-style:normal;">[Debug] ${(err.message||'').toString().replace(/</g,'&lt;')}</span>`;
+    // Repli si l'appel échoue (clé API absente/invalide, fonction indisponible, etc.)
+    textEl.textContent = `Vous avez partagé : « ${open1 || '...'} ». Et vous aimeriez faire évoluer : « ${open2 || '...'} ». C'est déjà une vraie matière de réflexion, qui mériterait d'être creusée plus loin avec un accompagnement individuel.`;
   } finally {
     loadingEl.style.display = 'none';
     textEl.style.display = 'block';
